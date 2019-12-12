@@ -283,7 +283,7 @@ CSourcePython::~CSourcePython()
 //-----------------------------------------------------------------------------
 bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
-#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
+#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE) || defined(ENGINE_PORTAL2)
 	DevMsg(1, MSG_PREFIX "Connecting interfaces...\n");
 	ConnectInterfaces(&interfaceFactory, 1);
 #else
@@ -400,7 +400,7 @@ void CSourcePython::Unload( void )
 	ConVar_Unregister( );
 
 	// New in CSGO...
-#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
+#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE) || defined(ENGINE_PORTAL2)
 	DevMsg(1, MSG_PREFIX "Disconnecting interfaces...\n");
 	DisconnectInterfaces();
 #else
@@ -575,7 +575,7 @@ PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &ar
 //-----------------------------------------------------------------------------
 // Alien Swarm.
 //-----------------------------------------------------------------------------
-#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
+#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE) || defined(ENGINE_PORTAL2)
 void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 {
 	unsigned int iEntityIndex;
@@ -586,7 +586,7 @@ void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 }
 #endif
 
-#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE)
+#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE) || defined(ENGINE_PORTAL2)
 void CSourcePython::OnEdictAllocated( edict_t *edict )
 {
 	unsigned int iEntityIndex;

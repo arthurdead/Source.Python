@@ -29,6 +29,8 @@
 //-----------------------------------------------------------------------------
 // This is required for accessing m_nFlags without patching convar.h
 #define private public
+#include "convar.h"
+#undef private
 
 #include "utilities/call_python.h"
 
@@ -87,7 +89,7 @@ CServerCommandManager* GetServerCommand(const char* szName,
 	if (!find_manager<ServerCommandMap, ServerCommandMap::iterator>(g_ServerCommandMap, szName, iter))
 	{
 		manager = CServerCommandManager::CreateCommand(szName, szHelpText, iFlags);
-		g_ServerCommandMap.insert(std::make_pair(manager->m_Name, manager));
+		g_ServerCommandMap.insert(std::make_pair(manager->GetName(), manager));
 	}
 	else
 	{

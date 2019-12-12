@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,88 +24,77 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _ENTITIES_CONSTANTS_PORTAL2_WRAP_H
+#define _ENTITIES_CONSTANTS_PORTAL2_WRAP_H
+
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-// This is required for accessing m_nFlags without patching convar.h
-#define private public
-#include "convar.h"
-#undef private
-
-#include "export_main.h"
 #include "utilities/wrap_macros.h"
-#include "modules/memory/memory_tools.h"
-#include "boost/unordered_map.hpp"
-#include "commands_say.h"
 
 
 //-----------------------------------------------------------------------------
-// Externals.
+// Exports damage types.
 //-----------------------------------------------------------------------------
-extern CSayCommandManager* GetSayCommand(const char* szName);
-
-extern void RegisterSayFilter(PyObject* pCallable);
-extern void UnregisterSayFilter(PyObject* pCallable);
-
-extern boost::unordered_map<std::string, CSayCommandManager*> g_SayCommandMap;
-COMMAND_GENERATOR(SayCommandGenerator, g_SayCommandMap)
-
-
-//-----------------------------------------------------------------------------
-// Forward declarations.
-//-----------------------------------------------------------------------------
-void export_say_command_manager(scope);
-
-
-//-----------------------------------------------------------------------------
-// Declare the _commands._say module.
-//-----------------------------------------------------------------------------
-DECLARE_SP_SUBMODULE(_commands, _say)
+template<class T>
+void export_engine_specific_damage_types(T _constants)
 {
-	export_say_command_manager(_say);
-
-	// Helper functions...
-	def("get_say_command",
-		GetSayCommand,
-		"Returns the SayCommandDispatcher instance for the given command",
-		args("name"),
-		reference_existing_object_policy()
-	);
-
-	def("register_say_filter",
-		RegisterSayFilter,
-		"Registers a callable to be called when clients use the say commands (say, say_team).",
-		args("callable")
-	);
-
-	def("unregister_say_filter",
-		UnregisterSayFilter,
-		"Unregisters a say filter.",
-		args("callable")
-	);
-
-	EXPOSE_COMMAND_GENERATOR(SayCommandGenerator)
+	// Nothing specific to Blade...
 }
 
 
 //-----------------------------------------------------------------------------
-// Expose CSayCommandManager.
+// Exports SolidFlags_t.
 //-----------------------------------------------------------------------------
-void export_say_command_manager(scope _say)
+template<class T, class U>
+void export_engine_specific_solid_flags(T _constants, U SolidFlags)
 {
-	class_<CSayCommandManager, boost::noncopyable>("SayCommandDispatcher", no_init)
-		.def("add_callback",
-			&CSayCommandManager::AddCallback,
-			"Adds a callback to the say command's list.",
-			args("callable")
-		)
-
-		.def("remove_callback",
-			&CSayCommandManager::RemoveCallback,
-			"Removes a callback from the say command's list.",
-			args("callable")
-		)
-
-		ADD_MEM_TOOLS(CSayCommandManager)
-	;
+	SolidFlags.value("TRIGGER_TOUCH_PLAYER", FSOLID_TRIGGER_TOUCH_PLAYER);
+	SolidFlags.value("NOT_MOVEABLE", FSOLID_NOT_MOVEABLE);
 }
+
+
+//-----------------------------------------------------------------------------
+// Exports entity effects.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_entity_effects(T _constants)
+{
+	// Nothing specific to Portal2...
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports RenderMode_t.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_render_mode(T _constants, U RenderEffects)
+{
+	// Nothing specific to Portal2...
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports RenderFx_t.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_render_effects(T _constants, U RenderEffects)
+{
+	RenderEffects.value("FADE_OUT", kRenderFxFadeOut);
+	RenderEffects.value("FADE_IN", kRenderFxFadeIn);
+	RenderEffects.value("PULSE_FAST_WIDER", kRenderFxPulseFastWider);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports Collision_Group_t.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_collision_group(T _constants, U CollisionGroup)
+{
+	CollisionGroup.value("PZ_CLIP", COLLISION_GROUP_PZ_CLIP);
+	CollisionGroup.value("DEBRIS_BLOCK_PROJECTILE", COLLISION_GROUP_DEBRIS_BLOCK_PROJECTILE);
+}
+
+
+#endif // _ENTITIES_CONSTANTS_PORTAL2_WRAP_H

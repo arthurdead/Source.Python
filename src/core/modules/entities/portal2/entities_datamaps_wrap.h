@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2016 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012 - 2016 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,45 +24,49 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _ENTITIES_DATAMAPS_WRAP_PORTAL2_H
+#define _ENTITIES_DATAMAPS_WRAP_PORTAL2_H
+
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-// Source.Python
-#include "utilities/wrap_macros.h"
-#include "events_generator.h"
+// #include "game/shared/predictioncopy.h"
+#include "entities_datamaps.h"
 
 
 //-----------------------------------------------------------------------------
-// CGameEventDescriptor
+// Exports datamap_t.
 //-----------------------------------------------------------------------------
-const char* CGameEventDescriptor::GetName()
+template<class T, class U>
+void export_engine_specific_datamap(T _datamaps, U DataMap)
 {
-#if defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE) || defined(ENGINE_PORTAL2)
-	CGameEventManager2* manager = (CGameEventManager2*) gameeventmanager;
-	return manager->event_names[name_index].key;
-#else
-	return name;
-#endif
+	DataMap.def_readonly("packed_size", &datamap_t::m_nPackedSize);
+
+	// TODO: Expose optimized_datamap_t...
+	// DataMap.def_readonly("optimized_datamap", &datamap_t::m_pOptimizedDataMap);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports typedescription_t.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_type_description(T _datamaps, U TypeDescription)
+{
+	TypeDescription.add_property("flat_offset", &TypeDescriptionExt::get_flat_offset);
+	TypeDescription.add_property("packed_offset", &TypeDescriptionExt::get_packed_offset);
+	TypeDescription.def_readonly("flat_group", &typedescription_t::flatGroup);
 }
 
 //-----------------------------------------------------------------------------
-// CGameEventDescriptorIter
+// Exports fieldtype_t.
 //-----------------------------------------------------------------------------
-CGameEventDescriptorIter::CGameEventDescriptorIter(CUtlVector<CGameEventDescriptor>* game_events) 
+template<class T, class U>
+void export_engine_specific_field_types(T _datamaps, U FieldTypes)
 {
-	this->game_events = game_events;
-	this->current_index = 0;
+	FieldTypes.value("INTEGER64", FIELD_INTEGER64);
+	FieldTypes.value("VECTOR4D", FIELD_VECTOR4D);
 }
 
-object CGameEventDescriptorIter::__iter__(PyObject* self)
-{
-	return object(handle<>(borrowed(self)));
-}
 
-CGameEventDescriptor& CGameEventDescriptorIter::__next__()
-{
-	if (current_index >= game_events->Count())
-		BOOST_RAISE_EXCEPTION(PyExc_StopIteration, "No more descriptors.")
-		
-	return game_events->Element(current_index++);
-}
+#endif // _ENTITIES_DATAMAPS_WRAP_PORTAL2_H

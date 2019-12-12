@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2016 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,45 +24,16 @@
 * Development Team grants this exception to all derivative works.
 */
 
-//-----------------------------------------------------------------------------
-// Includes.
-//-----------------------------------------------------------------------------
-// Source.Python
-#include "utilities/wrap_macros.h"
-#include "events_generator.h"
-
+#ifndef _WEAPONS_SCRIPTS_PORTAL2_WRAP_H
+#define _WEAPONS_SCRIPTS_PORTAL2_WRAP_H
 
 //-----------------------------------------------------------------------------
-// CGameEventDescriptor
+// Exports WeaponDataBase_t.
 //-----------------------------------------------------------------------------
-const char* CGameEventDescriptor::GetName()
+template<class T>
+void export_engine_specific_weapon_database(T _scripts)
 {
-#if defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE) || defined(ENGINE_PORTAL2)
-	CGameEventManager2* manager = (CGameEventManager2*) gameeventmanager;
-	return manager->event_names[name_index].key;
-#else
-	return name;
-#endif
+	// Nothing specific to Portal2...
 }
 
-//-----------------------------------------------------------------------------
-// CGameEventDescriptorIter
-//-----------------------------------------------------------------------------
-CGameEventDescriptorIter::CGameEventDescriptorIter(CUtlVector<CGameEventDescriptor>* game_events) 
-{
-	this->game_events = game_events;
-	this->current_index = 0;
-}
-
-object CGameEventDescriptorIter::__iter__(PyObject* self)
-{
-	return object(handle<>(borrowed(self)));
-}
-
-CGameEventDescriptor& CGameEventDescriptorIter::__next__()
-{
-	if (current_index >= game_events->Count())
-		BOOST_RAISE_EXCEPTION(PyExc_StopIteration, "No more descriptors.")
-		
-	return game_events->Element(current_index++);
-}
+#endif // _WEAPONS_SCRIPTS_PORTAL2_WRAP_H

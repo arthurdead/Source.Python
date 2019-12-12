@@ -29,6 +29,8 @@
 //-----------------------------------------------------------------------------
 // This is required for accessing m_nFlags without patching convar.h
 #define private public
+#include "convar.h"
+#undef private
 
 #include "boost/unordered_map.hpp"
 #include "utilities/wrap_macros.h"

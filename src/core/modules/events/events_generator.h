@@ -86,7 +86,7 @@ public:
 class CGameEventDescriptor
 {
 public:
-#if defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE)
+#if defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE) || defined(ENGINE_PORTAL2)
 	int			eventid;	// 0 - Same like name_index
 	int			name_index; // 4
 	KeyValues	*keys;		// 8
@@ -115,7 +115,7 @@ class CGameEventManager2: public IGameEventManager2
 {
 public:
 	CUtlVector<CGameEventDescriptor> game_events;
-#if defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE)
+#if defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE) || defined(ENGINE_PORTAL2)
 	char unknown[96];
 	CUtlRBTree< CUtlMap<const char*, int, int>::Node_t, int > event_names;
 #endif

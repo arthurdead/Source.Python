@@ -70,18 +70,26 @@ CloneRepo () {
 
     # Set the branch's repository directory
     BRANCHDIR="$STARTDIR/hl2sdk/$BRANCH"
+    
+    BRANCHURL=https://github.com/alliedmodders/hl2sdk.git
+    BRANCHNAME=$BRANCH
+    
+    if [ "$BRANCH" == "portal2" ]; then
+		BRANCHURL=https://github.com/arthurdead/hl2sdk.git
+		BRANCHNAME=portal2-missing-funcs
+    fi
 
     # If the hl2sdk directory does not exist, create the clone
     if [ ! -d "$BRANCHDIR" ]; then
         mkdir -p "$BRANCHDIR"
         cd "$BRANCHDIR"
-        git clone https://github.com/alliedmodders/hl2sdk.git .
+        git clone $BRANCHURL .
     else
         cd "$BRANCHDIR"
     fi
 
     # Try to checkout the selected branch and revert all changes
-    if git checkout -f $BRANCH; then
+    if git checkout -f $BRANCHNAME; then
         PullChanges
     else
         echo "Unknown branch to checkout"

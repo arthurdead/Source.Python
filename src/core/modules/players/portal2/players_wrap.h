@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2016 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,45 +24,23 @@
 * Development Team grants this exception to all derivative works.
 */
 
-//-----------------------------------------------------------------------------
-// Includes.
-//-----------------------------------------------------------------------------
-// Source.Python
-#include "utilities/wrap_macros.h"
-#include "events_generator.h"
+#ifndef _PLAYERS_WRAP_PORTAL2_H
+#define _PLAYERS_WRAP_PORTAL2_H
 
 
 //-----------------------------------------------------------------------------
-// CGameEventDescriptor
+// IPlayerInfo extension class
 //-----------------------------------------------------------------------------
-const char* CGameEventDescriptor::GetName()
+template<class T>
+void export_engine_specific_user_cmd(scope _players, T UserCmd)
 {
-#if defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE) || defined(ENGINE_PORTAL2)
-	CGameEventManager2* manager = (CGameEventManager2*) gameeventmanager;
-	return manager->event_names[name_index].key;
-#else
-	return name;
-#endif
+	UserCmd.def_readwrite("head_angles",
+		&CUserCmd::headangles
+	);
+
+	UserCmd.def_readwrite("head_offset",
+		&CUserCmd::headoffset
+	);
 }
 
-//-----------------------------------------------------------------------------
-// CGameEventDescriptorIter
-//-----------------------------------------------------------------------------
-CGameEventDescriptorIter::CGameEventDescriptorIter(CUtlVector<CGameEventDescriptor>* game_events) 
-{
-	this->game_events = game_events;
-	this->current_index = 0;
-}
-
-object CGameEventDescriptorIter::__iter__(PyObject* self)
-{
-	return object(handle<>(borrowed(self)));
-}
-
-CGameEventDescriptor& CGameEventDescriptorIter::__next__()
-{
-	if (current_index >= game_events->Count())
-		BOOST_RAISE_EXCEPTION(PyExc_StopIteration, "No more descriptors.")
-		
-	return game_events->Element(current_index++);
-}
+#endif // _PLAYERS_WRAP_PORTAL2_H

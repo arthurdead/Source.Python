@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,88 +24,57 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _ENTITIES_PROPS_WRAP_PORTAL2_H
+#define _ENTITIES_PROPS_WRAP_PORTAL2_H
+
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-// This is required for accessing m_nFlags without patching convar.h
-#define private public
-#include "convar.h"
-#undef private
-
-#include "export_main.h"
-#include "utilities/wrap_macros.h"
-#include "modules/memory/memory_tools.h"
-#include "boost/unordered_map.hpp"
-#include "commands_say.h"
+#include "dt_common.h"
+#include "dt_send.h"
+#include "entities_props.h"
 
 
 //-----------------------------------------------------------------------------
-// Externals.
+// Expose ServerClass.
 //-----------------------------------------------------------------------------
-extern CSayCommandManager* GetSayCommand(const char* szName);
-
-extern void RegisterSayFilter(PyObject* pCallable);
-extern void UnregisterSayFilter(PyObject* pCallable);
-
-extern boost::unordered_map<std::string, CSayCommandManager*> g_SayCommandMap;
-COMMAND_GENERATOR(SayCommandGenerator, g_SayCommandMap)
-
-
-//-----------------------------------------------------------------------------
-// Forward declarations.
-//-----------------------------------------------------------------------------
-void export_say_command_manager(scope);
-
-
-//-----------------------------------------------------------------------------
-// Declare the _commands._say module.
-//-----------------------------------------------------------------------------
-DECLARE_SP_SUBMODULE(_commands, _say)
+template<class T, class U>
+void export_engine_specific_server_class(T _props, U ServerClass_)
 {
-	export_say_command_manager(_say);
-
-	// Helper functions...
-	def("get_say_command",
-		GetSayCommand,
-		"Returns the SayCommandDispatcher instance for the given command",
-		args("name"),
-		reference_existing_object_policy()
-	);
-
-	def("register_say_filter",
-		RegisterSayFilter,
-		"Registers a callable to be called when clients use the say commands (say, say_team).",
-		args("callable")
-	);
-
-	def("unregister_say_filter",
-		UnregisterSayFilter,
-		"Unregisters a say filter.",
-		args("callable")
-	);
-
-	EXPOSE_COMMAND_GENERATOR(SayCommandGenerator)
+	ServerClass_.add_property("name", &ServerClassExt::get_name);
 }
 
 
 //-----------------------------------------------------------------------------
-// Expose CSayCommandManager.
+// Expose SendProp.
 //-----------------------------------------------------------------------------
-void export_say_command_manager(scope _say)
+template<class T, class U>
+void export_engine_specific_send_prop(T _props, U SendProp_)
 {
-	class_<CSayCommandManager, boost::noncopyable>("SayCommandDispatcher", no_init)
-		.def("add_callback",
-			&CSayCommandManager::AddCallback,
-			"Adds a callback to the say command's list.",
-			args("callable")
-		)
-
-		.def("remove_callback",
-			&CSayCommandManager::RemoveCallback,
-			"Removes a callback from the say command's list.",
-			args("callable")
-		)
-
-		ADD_MEM_TOOLS(CSayCommandManager)
-	;
+	SendProp_.add_property("priority", &SendProp::GetPriority);
+	SendProp_.def("get_priority", &SendProp::GetPriority);
 }
+
+
+//-----------------------------------------------------------------------------
+// Expose SendPropType.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_send_prop_types(T _props, U SendPropType_)
+{
+	SendPropType_.value("INT64", DPT_Int64);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose SendPropVariant.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_send_prop_variant(T _props, U SendPropVariant)
+{
+	SendPropVariant.def("get_int64", &SendPropVariantExt::get_typed_value<DPT_Int64, int64, &DVariant::m_Int64>);
+	SendPropVariant.def("get_int64", &SendPropVariantExt::get_typed_value<DPT_Int64, int64, &DVariant::m_Int64>);
+}
+
+
+#endif // _ENTITIES_PROPS_WRAP_PORTAL2_H

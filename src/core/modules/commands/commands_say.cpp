@@ -29,6 +29,8 @@
 //-----------------------------------------------------------------------------
 // This is required for accessing m_nFlags without patching convar.h
 #define private public
+#include "convar.h"
+#undef private
 
 #include <iostream>
 #include <string>
@@ -38,7 +40,6 @@
 #include "boost/unordered_map.hpp"
 #include "sp_main.h"
 #include "modules/listeners/listeners_manager.h"
-#include "convar.h"
 
 #include "commands_say.h"
 #include "commands.h"
@@ -104,7 +105,7 @@ CSayCommandManager* GetSayCommand(const char* szName)
 	if (!find_manager<SayCommandMap, SayCommandMap::iterator>(g_SayCommandMap, szName, iter))
 	{
 		manager = new CSayCommandManager(szName);
-		g_SayCommandMap.insert(std::make_pair(manager->m_Name, manager));
+		g_SayCommandMap.insert(std::make_pair(manager->GetName(), manager));
 	}
 	else
 	{

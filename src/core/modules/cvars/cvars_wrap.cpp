@@ -29,11 +29,12 @@
 //-----------------------------------------------------------------------------
 // This is required for accessing m_nFlags without patching convar.h
 #define private public
+#include "convar.h"
+#undef private
 
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
 #include "icvar.h"
-#include "convar.h"
 #include "cvars.h"
 
 #include ENGINE_INCLUDE_PATH(cvars.h)
